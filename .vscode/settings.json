@@ -1,0 +1,23 @@
+{
+  "cSpell.words": [
+    "aiobotocore",
+    "boto",
+    "botocore",
+    "certifi",
+    "dateutil",
+    "idna",
+    "matplotlib",
+    "mypy",
+    "networkx",
+    "numpy",
+    "pycodestyle",
+    "pycparser",
+    "pydocstyle",
+    "pylint",
+    "pytest",
+    "pyyaml",
+    "setuptools",
+    "unfixable",
+    "urllib"
+  ]
+}
