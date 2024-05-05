@@ -1,9 +1,17 @@
 """main."""
 
 import logging
+from importlib import import_module
+from importlib.metadata import packages_distributions
 from json import dumps
 from pathlib import Path
 from typing import Any
+
+
+def import_all_packages() -> None:
+    """Import all packages."""
+    for package in set(packages_distributions()):
+        import_module(package)
 
 
 def get_node_name(_class: Any) -> str:  # noqa: ANN401
