@@ -15,6 +15,7 @@
     "pydocstyle",
     "pylint",
     "pytest",
+    "pyvis",
     "pyyaml",
     "setuptools",
     "unfixable",

@@ -1,5 +1,6 @@
 """main."""
 
+import logging
 from json import dumps
 from pathlib import Path
 from typing import Any
@@ -29,12 +30,12 @@ def scan_objects(start: object, excluded_objects: tuple[object]) -> dict[str, li
     """
     objects_to_scan: set[object] = {start}
     classes: dict[str, list[str]] = {}
-    print(f"Excluding {excluded_objects}")
     while objects_to_scan:
         current_class: Any = objects_to_scan.pop()
         if current_class in (excluded_objects):
-            print(f"Excluding {current_class}")
+            logging.info(f"Excluding {current_class}")
             continue
+
         subclasses: set[object] = set(current_class.__subclasses__())
         subclasses.difference_update(set(excluded_objects))
         objects_to_scan.update(subclasses)
@@ -46,12 +47,14 @@ def scan_objects(start: object, excluded_objects: tuple[object]) -> dict[str, li
 
 def main() -> None:
     """Main."""
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Starting data generation.")
+
     start = object
-    excluded_objects = (type(type),)
+    excluded_objects = (type,)
+    logging.info(f"scanning objects based on {start} and excluding {excluded_objects}.")
     object_relationships = scan_objects(start, excluded_objects)
 
-    # THIS IS A HACK BECAUSE TYPES ARE ANNOYING
-    object_relationships["type builtins"] = []
     object_relationships_file = Path(__file__).parent / "object_relationships.json"
     object_relationships_file.write_text(
         dumps(
@@ -61,6 +64,8 @@ def main() -> None:
             },
         ),
     )
+
+    logging.info("data generation done.")
 
 
 if __name__ == "__main__":

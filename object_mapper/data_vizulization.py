@@ -1,5 +1,6 @@
 """main."""
 
+import logging
 from json import loads
 from pathlib import Path
 
@@ -19,10 +20,11 @@ def add_node_wrapper(
         color (str): Node color.
     """
     graph.add_node(
-        node_name,
+        n_id=node_name,
         color=color,
         mass=5,
         module=node_name.split(" ")[1],
+        base_module=node_name.split(" ")[1].split(".", 1)[0],
         type="branch",
     )
 
@@ -45,6 +47,10 @@ def map_objects(
     """
     colors = ["blue", "purple"]
     for subclass_node_name in subclass_node_names:
+        if graph.node_map.get(subclass_node_name):
+            graph.add_edge(parent, subclass_node_name)
+            continue
+
         add_node_wrapper(
             graph=graph,
             node_name=subclass_node_name,
@@ -61,14 +67,14 @@ def map_objects(
                 layer=layer + 1,
             )
         else:
-            graph.get_node(subclass_node_name)["color"] = "red"
+            graph.get_node(n_id=subclass_node_name)["color"] = "red"
 
 
 def object_mapper(start_node_name: str, object_relationships: dict[str, list[str]]) -> None:
     """Object mapper.
 
     Args:
-        start (object): Start object.
+        start_node_name (str): Starting node name.
         object_relationships (dict[str, set[object]]): Object relationships.
     """
     graph = Network(
@@ -94,7 +100,8 @@ def object_mapper(start_node_name: str, object_relationships: dict[str, list[str
 
 def main() -> None:
     """Main."""
-    print("start")
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Starting data visualization.")
 
     object_relationships_file = Path(__file__).parent / "object_relationships.json"
     object_relationships_data = loads(object_relationships_file.read_text())
@@ -103,7 +110,7 @@ def main() -> None:
         object_relationships_data["object_relationships"],
     )
 
-    print("Done")
+    logging.info("data visualization done.")
 
 
 if __name__ == "__main__":
